@@ -1,0 +1,259 @@
+#########Driver sessions#########
+
+	Start session:
+
+		WebDriverManager.chromedriver().setup(); or WebDriverManager.firefoxDriver().setup();
+		WebDriver driver = new ChromeDriver(); or WebDriver driver = new ChromeDriver();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds((20));
+
+	With browser options:
+
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--start-maximized");
+		options.addArguments("--disable-notifications");
+		driver = new ChromeDriver(options);
+	
+	Quit and close session:
+
+		driver.quit();
+		driver.close();
+
+#########Driver manage#########
+
+	Cookies:
+
+		driver.manage().deleteAllCookies();
+
+	Window size:
+
+		driver.manage().window().maximize();
+		driver.manage().window().minimize();
+		driver.manage().window().fullscreen();
+
+	Implicit waiter:
+
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS) or driver.manage().timeouts().implicitlyWait(10);
+
+	Explicit waiter:
+
+		wait.until(--);
+		wait.until(ExpectedConditions.visibilityOf(element));     --- ALSO INVISIBILITY
+		wait.until(ExpectedConditions.visibilityOfAllElements(list of elements));
+		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(list of element By locators));
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By locator));
+
+		wait.until(ExpectedConditions.numberOfElementsToBe(By locator, Integer));
+		wait.until(ExpectedConditions.numberOfElementsToBeLessThan(By locator, Integer));
+		wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By locator, Integer));
+		wait.until(ExpectedConditions.numberOfWindowsToBe(Integer));
+
+		wait.until(ExpectedConditions.elementToBeClickable(By locator or Webelement element));	
+		wait.until(ExpectedConditions.elementToBeSelected(By locator or Webelement element));
+
+		wait.until(ExpectedConditions.presenceOfElementLocated(By locator));
+		wait.until(ExpectedConditions.alertIsPresent());
+
+
+		wait.until(ExpectedConditions.urlToBe(String));
+		wait.until(ExpectedConditions.urlContains(String));
+		wait.until(ExpectedConditions.titleIs(String));
+		wait.until(ExpectedConditions.titleContains(String));
+
+		wait.until(ExpectedConditions.textToBe(String));
+		wait.until(ExpectedConditions.textToBePresentInElement(Webelement element));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By locator));
+
+#########Driver navigation#########
+
+	driver.get("url");
+	driver.navigate().to("url");
+	driver.navigate().back();
+	driver.navigate().forward();
+	driver.navigate().refresh();
+
+#########Browser Information#########
+
+	driver.getCurrentUrl();
+	driver.getTitle();
+	driver.getWindowHandle();
+	driver.getWindowHandles();
+
+#########Switch to frames, new window, window, alert, active element:#########
+
+	driver.switchTo().----
+
+#########Find Element(s)#########
+
+	driver.findElement(By.id(""));
+	driver.findElement(By.name(""));
+	driver.findElement(By.className(""));
+	driver.findElement(By.tagName(""));
+	driver.findElement(By.cssSelector(""));
+	driver.findElement(By.xpath(""));
+	driver.findElement(By.linkText(""));
+	driver.findElement(By.partialLinkText(""));
+
+	Multiple elements and iteration of elements:
+
+		List<WebElement> elements = driver.findElements(By.tagName("li"));
+		for (WebElement element : elements) {
+    			System.out.println("Paragraph text:" + element.getText());
+		};
+
+	FIND BY ANNOTATIONS:
+
+		@FindBy (id, name, className,tagName,css,xpath,linkText,partialLinkText="")
+		WebElement elementFoundName;
+
+		@FindBy(how=How.CSS , using="locator")
+		@FindBy(how=How.ID , using="foobar")
+
+	Evaluating subset of DOM (ancestor of element):
+
+		WebElement fruits = driver.findElement(By.id("fruits"));
+		WebElement fruit = fruits.findElement(By.className("tomatoes"));
+
+	Relative Locators: BASED ON ELEMENT LOCATION ON DOM COMPARED TO ELEMENTS AROUND IT
+
+		||email||
+		||password||
+		||cancel||  ||Submit||
+
+		By emailLocator = RelativeLocator.with(By.tagName("input")).above(By.id("password"));
+		By passwordLocator = RelativeLocator.with(By.tagName("input")).below(By.id("email"));
+		By cancelLocator = RelativeLocator.with(By.tagName("button")).toLeftOf(By.id("submit"));
+		By submitLocator = RelativeLocator.with(By.tagName("button")).toRightOf(By.id("cancel"));
+		By emailLocator = RelativeLocator.with(By.tagName("input")).near(By.id("lbl-email"));
+
+	CHAINED:
+
+		By submitLocator = RelativeLocator.with(By.tagName("button")).below(By.id("email")).toRightOf(By.id("cancel"));
+
+#########Interaction with Elements#########
+
+	Text actions:
+
+		element.sendKeys("text");
+		element.clear();
+
+	Click:
+
+		element.click();
+
+	Mouse Actions:
+
+		Click and Hold: new Actions(driver).clickAndHold(element).perform();
+		Click and Release: new Actions(driver).click(element).perform();
+		Context Click(Right click): new Actions(driver).contextClick(element).perform();
+		Double Click: new Actions(driver).doubleClick(element).perform();
+		Move To Element(HOVER): new Actions(driver).moveToElement(element).perform();
+		Drag and Drop: new Actions(driver).dragAndDrop(draggableElement, dropPlaceElement).perform();
+		Scroll: new Actions(driver).scrollToElement(element).perform();
+		ScrollByAmount(deltaX, deltaY - negative are left and up):  new Actions(driver).scrollByAmount(50, 500).perform();
+	
+	Keyboard Actions:
+
+		Key UP, key DOWN, send keys(used in the middle of other actions)
+			new Actions(driver)
+				.keyDown(Keys.SHIFT)
+                		.sendKeys("N")
+                		.keyUp(Keys.SHIFT)
+                		.sendKeys("ame")
+                		.perform();
+
+	Pause:(between actions)
+
+		new Actions(driver)
+                	.moveToElement(clickable)
+                	.pause(Duration.ofSeconds(1))
+                	.clickAndHold()
+                	.pause(Duration.ofSeconds(1))
+                	.sendKeys("abc")
+                	.perform();
+
+	File Upload:
+
+		WebElement fileInput = driver.findElement(By.cssSelector("input[type=file]"));
+    		fileInput.sendKeys(uploadFile.getAbsolutePath());
+    		driver.findElement(By.id("file-submit")).click();
+
+#########Element information#########
+
+	returns boolean(true/false):
+
+		element.isDisplayed();
+		element.isEnabled();
+		element.isSelected();
+
+	get specific info:
+
+		element.getText();
+		element.getTagName();
+		element.getAttribute("attribute");
+		element.getCssVlaue("cssValue");
+
+#########Assertions#########
+
+	Assertions.assertEquals(expected, actual, message);
+	Assertions.assertNotEquals(expected, actual, message);
+	Assertions.assertTrue(Boolean condition, actual, message);
+	Assertions.assertFalse(Boolean condition, message);
+	Assertions.assertNull(actual, message);
+	Assertions.assertNotNull(actual, message);
+	Assertions.fail(message);
+	
+	
+#########Alerts, ConfirmBoxes, Prompts#########
+
+	Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+	alert.accept();
+	alert.dismiss();
+	alert.getText();
+	alert.sendKeys("text");
+
+#########Windows and Tabs#########
+
+	//Store the ID of the original window
+	String originalWindow = driver.getWindowHandle();
+
+	//Check we don't have other windows open already
+	assert driver.getWindowHandles().size() == 1;
+
+	//Click the link which opens in a new window
+	driver.findElement(By.linkText("new window")).click();
+
+	//Wait for the new window or tab
+	wait.until(numberOfWindowsToBe(2));
+
+	//Loop through until we find a new window handle
+	for (String windowHandle : driver.getWindowHandles()) {
+    		if(!originalWindow.contentEquals(windowHandle)) {
+        		driver.switchTo().window(windowHandle);
+        		break;
+    		}
+	}
+
+	//Wait for the new tab to finish loading content
+	wait.until(titleIs("Selenium documentation"));
+  
+
+	// Opens a new tab and switches to new tab
+	driver.switchTo().newWindow(WindowType.TAB);
+
+	// Opens a new window and switches to new window
+	driver.switchTo().newWindow(WindowType.WINDOW);
+
+	//Close the tab or window
+	driver.close();
+
+	//Switch back to the old tab or window
+	driver.switchTo().window(originalWindow);
+  
+	       
+	
+
+#########Logger#########
+	private static final Logger log = LoggerFactory.getLogger(TestSuite.class);
+	log.info("info");
+
+RemoteWebDriver for grid - to early to learn

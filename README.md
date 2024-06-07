@@ -1,12 +1,9 @@
-# badin-selenium-simple-UI-framework 
-
-
 
 ## Name
-badin-selenium-simple-UI-framework 
+Basic Selenium Java project
 
 ## Description
-Simple selenium framework without unnecessary dependencies that can be used out of the box and customized according to project needs. It is a maven project, that is using Junit5 test runner and selenium v3, it supports java 8.
+Simple selenium project without unnecessary dependencies that can be used out of the box and customized according to project needs. It is a maven project, that is using Junit5 test runner and selenium v3, it supports java 8.
 
 ## Installation
 Clone the project to your local repo, make sure you have jdk and maven installed, maven will handle the rest of the dependencies.
